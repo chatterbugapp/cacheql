@@ -1,6 +1,6 @@
 require "digest"
-require "activesupport"
-require "activerecord"
+require "active_support"
+require "active_record"
 require "graphql"
 require "graphql-batch"
 
