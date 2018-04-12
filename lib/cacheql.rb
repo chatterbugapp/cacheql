@@ -1,4 +1,4 @@
-require "digest/sha"
+require "digest"
 require "activesupport"
 require "activerecord"
 require "graphql"
