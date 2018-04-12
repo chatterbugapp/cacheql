@@ -1,8 +1,8 @@
 require "test_helper"
 
-class CacheqlTest < Minitest::Test
+class CacheQLTest < Minitest::Test
   def test_that_it_has_a_version_number
-    refute_nil ::Cacheql::VERSION
+    refute_nil ::CacheQL::VERSION
   end
 
   def test_it_does_something_useful

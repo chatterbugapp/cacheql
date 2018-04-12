@@ -2,7 +2,7 @@ require "digest"
 require "active_support"
 require "active_record"
 require "graphql"
-require "graphql-batch"
+require "graphql/batch"
 
 require "cacheql/version"
 require "cacheql/field_instrumentation"
