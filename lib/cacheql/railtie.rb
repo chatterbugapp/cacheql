@@ -1,8 +1,5 @@
 module CacheQL
   class Railtie < Rails::Railtie
-    config.cache = Rails.cache
-    config.logger = Rails.logger
-
     # Bump to bust all GraphQL caches!
     config.global_key = "CacheQL/v1"
 
@@ -10,6 +7,10 @@ module CacheQL
     config.expires_range = (90..120).to_a.freeze
 
     initializer "cacheql.initialize" do
+      # Bring over some rails default
+      config.cache = Rails.cache
+      config.logger = Rails.logger
+
       require "cacheql/field_instrumentation"
       require "cacheql/polymorphic_key_loader"
       require "cacheql/record_loader"
