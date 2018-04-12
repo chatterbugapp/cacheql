@@ -10,9 +10,9 @@ module CacheQL
     # around_action :log_field_instrumentation
     #
     # def log_field_instrumentation(&block)
-    #   CacheQL::FieldInstrumentation.log(Rails.logger, &block)
+    #   CacheQL::FieldInstrumentation.log(&block)
     # end
-    def self.log(logger, &block)
+    def self.log(&block)
       field_instruments = Hash.new(0)
       ActiveSupport::Notifications.subscribe(NAME) do |*args|
         event = ActiveSupport::Notifications::Event.new(*args)
@@ -23,7 +23,7 @@ module CacheQL
 
       ActiveSupport::Notifications.unsubscribe(NAME)
       field_instruments.sort_by(&:last).reverse.each do |field, ms|
-        logger.info "[CacheQL::Tracing] #{field} took #{ms.round(3)}ms"
+        CacheQL::Railtie.config.logger.info "[CacheQL::Tracing] #{field} took #{ms.round(3)}ms"
       end
     end
 

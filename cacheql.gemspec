@@ -22,9 +22,10 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "graphql-batch", "~> 0.3.9"
-  spec.add_dependency "activesupport", "~> 5.0"
-  spec.add_dependency "activerecord", "~> 5.0"
 
+  spec.add_development_dependency "activesupport", "~> 5.0"
+  spec.add_development_dependency "activerecord", "~> 5.0"
+  spec.add_development_dependency "railties", "~> 5.0"
   spec.add_development_dependency "bundler", "~> 1.16.a"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "minitest", "~> 5.0"
