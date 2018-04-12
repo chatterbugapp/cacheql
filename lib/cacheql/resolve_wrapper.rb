@@ -1,5 +1,5 @@
 module CacheQL
-  class ResolverCache
+  class ResolveWrapper
     def initialize(resolver_func)
       @resolver_func = resolver_func
     end

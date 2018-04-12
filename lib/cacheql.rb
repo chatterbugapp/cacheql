@@ -5,8 +5,8 @@ require "graphql"
 require "graphql-batch"
 
 require "cacheql/version"
-require "cacheql/cache_wrapper"
 require "cacheql/field_instrumentation"
+require "cacheql/resolve_wrapper"
 
 require "cacheql/association_loader"
 require "cacheql/polymorphic_key_loader"
@@ -25,10 +25,6 @@ module CacheQL
   # Expire caches within this minute range
   mattr_accessor :expires_range
   self.expires_range = (90..120).to_a.freeze
-
-  # Only allow this array of fields to be cached for now
-  mattr_accessor :fetchable_fields
-  self.cacheable_fields = []
 
   # Query-level caching, for any cacheable_fields
   def self.fetch(cacheable_fields, query, variables, &block)
@@ -50,5 +46,5 @@ end
 # Wrap a resolve func with:
 # resolve CacheQL -> { |obj, args, ctx| obj.do_stuff }
 def CacheQL(resolver_func)
-  CacheQL::CacheWrapper.new(resolver_func)
+  CacheQL::ResolveWrapper.new(resolver_func)
 end
