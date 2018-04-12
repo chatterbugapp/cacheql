@@ -16,8 +16,12 @@ module CacheQL
     cacheables = document.definitions.map { |definition| definition.selections.map(&:name) }.flatten & cacheable_fields
 
     if cacheables.present?
-      cache_key = [CacheQL::Railtie.config.global_key, 'result', Digest::SHA256.hexdigest(document.to_query_string + variables.to_s)]
-      cache.fetch(cache_key, expires_in: CacheQL::Railtie.config.expires_range.sample.minutes) do
+      cache_key = [
+        CacheQL::Railtie.config.global_key,
+        'result',
+        Digest::SHA256.hexdigest(document.to_query_string + variables.to_s)
+      ]
+      CacheQL::Railtie.config.cache.fetch(cache_key, expires_in: CacheQL::Railtie.config.expires_range.sample.minutes) do
         block.call(document)
       end
     else
