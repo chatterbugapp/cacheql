@@ -3,6 +3,30 @@
 # http://help.apm.scoutapp.com/#ruby-custom-instrumentation
 module CacheQL
   class FieldInstrumentation
+    NAME = "graphql.field".freeze
+
+    # For use in an around_action call to log all fields. For example:
+    #
+    # around_action :log_field_instrumentation
+    #
+    # def log_field_instrumentation(&block)
+    #   CacheQL::FieldInstrumentation.log(Rails.logger, &block)
+    # end
+    def self.log(logger, &block)
+      field_instruments = Hash.new(0)
+      ActiveSupport::Notifications.subscribe(NAME) do |*args|
+        event = ActiveSupport::Notifications::Event.new(*args)
+        field_instruments[event.payload[:label]] += event.duration
+      end
+
+      block.call
+
+      ActiveSupport::Notifications.unsubscribe(NAME)
+      field_instruments.sort_by(&:last).reverse.each do |field, ms|
+        logger.info "[CacheQL::Tracing] #{field} took #{ms.round(3)}ms"
+      end
+    end
+
     # instrumenter must respond to #instrument
     # See ScoutApm::Tracer for example
     def initialize(instrumenter)
