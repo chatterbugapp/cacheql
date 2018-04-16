@@ -47,7 +47,7 @@ def execute
 
   FIELDS = %w(users curriculum)
   render json: CacheQL.fetch(FIELDS, query, variables) { |document|
-    ChatterbugSchema.execute(
+    YourSchema.execute(
       document: document,
       variables: variables,
       context: { },
