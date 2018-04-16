@@ -1,8 +1,11 @@
 # CacheQL
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/cacheql`. To experiment with that code, run `bin/console` for an interactive prompt.
+Need to cache and instrument your GraphQL code in Ruby? Look no further!
 
-TODO: Delete this and the text above, and describe your gem
+This is a collection of utilities for [graphql-ruby](http://graphql-ruby.org)
+that were collected from various places on GitHub + docs.
+
+This code was extracted from [Chatterbug](https://chatterbug.com).
 
 ## Installation
 
@@ -22,7 +25,117 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+There's three major parts to this gem:
+
+### Cache helpers
+
+Need to cache a single resolve function? Wrap it in `CacheQL`:
+
+``` ruby
+resolve CacheQL -> (obj, args, ctx) {
+  # run expensive operation
+  # this resolve function's result will be cached on obj.cache_key
+}
+```
+
+Want to cache the entire response after GraphQL has generated it? Try this in
+your controller:
+
+``` ruby
+def execute
+  # other graphql stuff...
+
+  FIELDS = %w(users curriculum)
+  render json: CacheQL.fetch(FIELDS, query, variables) { |document|
+    ChatterbugSchema.execute(
+      document: document,
+      variables: variables,
+      context: { },
+      operation_name: params[:operationName]).to_h
+  }
+end
+```
+
+This will cache the entire response when the query includes `FIELDS`.
+
+### Loaders
+
+These are all based off of community-written examples using [graphql-batch](https://github.com/Shopify/graphql-batch).
+These will reduce N+1 queries in your GraphQL code.
+
+Batch up `belongs_to` calls:
+
+``` ruby
+# when obj has a belongs_to :language
+
+resolve -> (obj, args, ctx) {
+  RecordLoader.for(Language).load(obj.language_id)
+}
+```
+
+Batch up `belongs_to polymorphic: true` calls:
+
+``` ruby
+# when obj has a belongs_to :respondable, polymorphic: true
+
+resolve -> (obj, args, ctx) {
+  PolymorphicKeyLoader.for(Response, :respondable).load(obj.respondable)
+}
+```
+
+Batch up entire associations:
+
+``` ruby
+# when obj has_many :clozes
+
+resolve -> (obj, args, ctx) {
+  AssociationLoader.for(obj.class, :clozes).load(obj)
+}
+```
+
+### Logging
+
+Want to get your GraphQL fields logging locally? In your controller, add:
+
+
+``` ruby
+around_action :log_field_instrumentation
+
+private
+
+def log_field_instrumentation(&block)
+  CacheQL::FieldInstrumentation.log(&block)
+end
+```
+
+This will then spit out timing logs for each field run during each request.
+For example:
+
+```
+[CacheQL::Tracing] User.displayLanguage took 7.591ms
+[CacheQL::Tracing] User.createdAt took 0.117ms
+[CacheQL::Tracing] User.intercomHash took 0.095ms
+[CacheQL::Tracing] User.id took 0.09ms
+[CacheQL::Tracing] User.friendlyTimezone took 0.087ms
+[CacheQL::Tracing] User.utmContent took 0.075ms
+[GraphQL::Tracing] User.timezone took 0.048ms
+[CacheQL::Tracing] User.email took 0.046ms
+[CacheQL::Tracing] User.name took 0.042ms
+[CacheQL::Tracing] Query.currentUser took 0.041ms
+```
+
+### Instrumentation
+
+This gem includes an instrumenter for [Scout](https://scoutapp.com) that will
+show the timing breakdown of each field in your metrics. Assuming you have Scout
+setup, add to your schema:
+
+
+``` ruby
+YourSchema = GraphQL::Schema.define do
+  instrument :field, CacheQL::FieldInstrumentation.new(ScoutApm::Tracer)
+end
+```
 
 ## Development
 
