@@ -69,7 +69,7 @@ Batch up `belongs_to` calls:
 # when obj has a belongs_to :language
 
 resolve -> (obj, args, ctx) {
-  RecordLoader.for(Language).load(obj.language_id)
+  CacheQL::RecordLoader.for(Language).load(obj.language_id)
 }
 ```
 
@@ -79,7 +79,7 @@ Batch up `belongs_to polymorphic: true` calls:
 # when obj has a belongs_to :respondable, polymorphic: true
 
 resolve -> (obj, args, ctx) {
-  PolymorphicKeyLoader.for(Response, :respondable).load(obj.respondable)
+  CacheQL::PolymorphicKeyLoader.for(Response, :respondable).load(obj.respondable)
 }
 ```
 
@@ -89,7 +89,7 @@ Batch up entire associations:
 # when obj has_many :clozes
 
 resolve -> (obj, args, ctx) {
-  AssociationLoader.for(obj.class, :clozes).load(obj)
+  CacheQL::AssociationLoader.for(obj.class, :clozes).load(obj)
 }
 ```
 
