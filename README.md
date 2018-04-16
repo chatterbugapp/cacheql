@@ -25,7 +25,7 @@ Or install it yourself as:
 
 ## Usage
 
-There's three major parts to this gem:
+There's four major parts to this gem:
 
 ### Cache helpers
 
