@@ -5,7 +5,7 @@ Need to cache and instrument your GraphQL code in Ruby? Look no further!
 This is a collection of utilities for [graphql-ruby](http://graphql-ruby.org)
 that were collected from various places on GitHub + docs.
 
-This code was extracted from [Chatterbug](https://chatterbug.com).
+This code was extracted from [Chatterbug](https://chatterbug.com). Check out the talk from [Railsconf 2018](https://speakerdeck.com/qrush/the-graphql-way-a-new-path-for-json-apis) about this gem!
 
 ## Installation
 
