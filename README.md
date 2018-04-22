@@ -63,6 +63,16 @@ This will cache the entire response when the query includes `FIELDS`.
 These are all based off of community-written examples using [graphql-batch](https://github.com/Shopify/graphql-batch).
 These will reduce N+1 queries in your GraphQL code.
 
+Before using loaders, you'll have to [use `GraphQL::Batch`](https://github.com/Shopify/graphql-batch#basic-usage) as a plugin in your schema:
+
+``` ruby
+YourSchema = GraphQL::Schema.define do
+  query YourQueryType
+
+  use GraphQL::Batch
+end
+```
+
 Batch up `belongs_to` calls:
 
 ``` ruby
