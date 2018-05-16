@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = %q{Various GraphQL caching / instrumentation tools}
   spec.description   = spec.summary
-  spec.homepage      = "https://github.com/chatterbug/cacheql"
+  spec.homepage      = "https://github.com/chatterbugapp/cacheql"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
